@@ -1,0 +1,9 @@
+flask==1.1.2
+librosa==0.6.0
+numba==0.48
+numpy
+keras
+tensorflow
+scikit-learn
+pillow
+matplotlib

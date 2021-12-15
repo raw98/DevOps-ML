@@ -1,0 +1,15 @@
+version: '3.3'
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    ports:
+      - "8080:8080"
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    restart: always
+    ports:
+     - "5000:5000"
