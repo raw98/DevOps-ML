@@ -53,11 +53,11 @@ def allowed_file(filename):
            
 
 
-@app.route('/uploadervgg', methods = ['GET','POST'])
-def classify_vgg():
-    if request.method == 'GET':
-           return "hello"
-    if request.method == 'POST':
+@app.route('/uploader', methods = ['GET','POST'])
+def upload_file():
+   if request.method == 'GET':
+       return "hello"
+   if request.method == 'POST':
          file = request.files['file']
          if file.filename == '':
               return 'No file selected'
@@ -65,21 +65,16 @@ def classify_vgg():
           filename = secure_filename(file.filename)
           file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                    
-          base_model = VGG19(weights='imagenet')
-          model = Model(inputs=base_model.input, outputs=base_model.get_layer('flatten').output)
-          image = load_img(UPLOAD_FOLDER+'/'+filename, target_size=(224, 224, 3))
-          np.expand_dims(image, axis=0)
-          image = img_to_array(image)
-          image = image.reshape((1, image.shape[0], image.shape[1], image.shape[2]))
-
-          image = preprocess_input(image)
-          yhat = model.predict(image)
-    # create a list containing the class labels
-          class_labels = ["blues", "classical", "country", "disco", "hiphop", "metal", "pop", "reggae", "rock"]
-    # find the index of the class with maximum score
-          pred = np.argmax(class_labels, axis=-1)
-    # print the label of the class with maximum score
-          return class_labels[pred]
+          signal, rate = librosa.load(UPLOAD_FOLDER+'/'+filename)  
+           #The Mel Spectrogram
+          S = librosa.feature.melspectrogram(signal, sr=rate, n_fft=2048,    hop_length=512, n_mels=128)
+          S_DB = librosa.power_to_db(S, ref=np.max)
+          S_DB = S_DB.flatten()[:1200]
+          clf = pickle.load(open('SVM.pkl' , 'rb'))
+          ans = clf.predict([S_DB])[0]
+          music_class = str(ans)
+          print(music_class)
+          return music_class
           
           
     
