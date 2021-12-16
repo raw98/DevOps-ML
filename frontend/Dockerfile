@@ -1,7 +1,8 @@
 FROM python:3.8-slim-buster
 
 EXPOSE 8080:8080
+COPY . /app
 WORKDIR /app
-RUN python -m pip install -r flask==1.1.2
-VOLUME  . /app
+RUN python -m pip install -r requirement.txt
+VOLUME . .
 CMD ["python", "main.py"]
