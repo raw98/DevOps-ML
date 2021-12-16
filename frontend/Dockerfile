@@ -1,8 +1,8 @@
 FROM python:3.8-slim-buster
-
-EXPOSE 8080:8080
-COPY . /app
+EXPOSE 8081
+ENV PYTHONUNBUFFERED=1
+COPY requirements.txt .
+RUN python -m pip install -r requirements.txt
 WORKDIR /app
-RUN python -m pip install -r requirement.txt
-VOLUME . .
-CMD ["python", "main.py"]
+COPY . /app
+CMD ["python", "app.py"]
